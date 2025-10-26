@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: debate-ias
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+    healthCheckPath: /
