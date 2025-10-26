@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debate IA | Edición Genética</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+          --whatsapp-green: #25D366;
+          --whatsapp-dark: #075E54;
+          --whatsapp-bg: #E5DDD5;
+          --whatsapp-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+          --pro-bubble: #DCF8C6;
+          --against-bubble: #FFB9B9;
+          --moderator-bubble: #E3F2FD;
+          --text-primary: #212121;
+          --text-secondary: #667781;
+          --border-color: #E4E6EB;
+        }
+      
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+      
+        body {
+          font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+          background: var(--whatsapp-bg);
+          background-image: var(--whatsapp-pattern);
+          height: 100vh;
+          overflow: hidden;
+        }
+      
+        .container {
+          max-width: 100%;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+        }
+      
+        header {
+          background: var(--whatsapp-dark);
+          color: white;
+          padding: 12px 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+      
+        .header-left {
+          display: flex;
+          flex-direction: column;
+        }
+      
+        .header-title {
+          font-size: 18px;
+          font-weight: 500;
+        }
+      
+        .header-subtitle {
+          font-size: 14px;
+          opacity: 0.7;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+        }
+      
+        .status-indicator {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #4FC3F7;
+          animation: pulse 2s infinite;
+        }
+      
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+      
+        .chat-container {
+          flex: 1;
+          overflow-y: auto;
+          padding: 20px;
+          background: var(--whatsapp-bg);
+          background-image: var(--whatsapp-pattern);
+        }
+      
+        .chat-container::-webkit-scrollbar {
+          width: 7px;
+        }
+      
+        .chat-container::-webkit-scrollbar-track {
+          background: transparent;
+        }
+      
+        .chat-container::-webkit-scrollbar-thumb {
+          background: rgba(0,0,0,0.2);
+          border-radius: 10px;
+        }
+      
+        .message {
+          margin-bottom: 10px;
+          display: flex;
+          flex-direction: column;
+          max-width: 75%;
+          animation: slideIn 0.3s ease-out;
+        }
+      
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      
+        .message-header {
+          display: flex;
+          align-items: baseline;
+          gap: 8px;
+          margin-bottom: 2px;
+          font-size: 14px;
+        }
+      
+        .message-author {
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+      
+        .message-time {
+          font-size: 12px;
+          color: var(--text-secondary);
+        }
+      
+        .message-bubble {
+          padding: 8px 12px;
+          border-radius: 7.5px;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+          position: relative;
+          word-wrap: break-word;
+          line-height: 1.4;
+        }
+      
+        .pro-message {
+          align-items: flex-start;
+        }
+      
+        .pro-message .message-bubble {
+          background: var(--pro-bubble);
+          border-bottom-left-radius: 2px;
+        }
+      
+        .against-message {
+          align-items: flex-end;
+          margin-left: auto;
+        }
+      
+        .against-message .message-bubble {
+          background: var(--against-bubble);
+          border-bottom-right-radius: 2px;
+        }
+      
+        .moderator-message {
+          align-items: center;
+          margin-left: auto;
+          margin-right: auto;
+          max-width: 90%;
+        }
+      
+        .moderator-message .message-bubble {
+          background: var(--moderator-bubble);
+          border-radius: 7.5px;
+          text-align: center;
+        }
+      
+        .message-content {
+          color: var(--text-primary);
+          font-size: 16px;
+          line-height: 1.6;
+        }
+      
+        .controls {
+          background: #F0F0F0;
+          padding: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          border-top: 1px solid var(--border-color);
+        }
+        
+        .controls-row {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+        }
+      
+        button {
+          padding: 14px 18px;
+          border: none;
+          border-radius: 24px;
+          font-size: 15px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+        }
+      
+        button:active {
+          transform: scale(0.98);
+        }
+      
+        button:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      
+        .pro-btn {
+          background: #25D366;
+          color: white;
+        }
+      
+        .pro-btn:hover:not(:disabled) {
+          background: #20BD5A;
+        }
+      
+        .against-btn {
+          background: #EF4444;
+          color: white;
+        }
+      
+        .against-btn:hover:not(:disabled) {
+          background: #DC2626;
+        }
+      
+        .utility-btn {
+          background: #667781;
+          color: white;
+        }
+      
+        .utility-btn:hover:not(:disabled) {
+          background: #556370;
+        }
+        
+        #endDebateBtn {
+          background: #ef4444 !important;
+          width: 100%;
+        }
+        
+        #endDebateBtn:hover:not(:disabled) {
+          background: #dc2626 !important;
+        }
+      
+        .loading {
+          width: 14px;
+          height: 14px;
+          border: 2px solid rgba(255,255,255,0.3);
+          border-top-color: white;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+      
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      
+        .empty-state {
+          text-align: center;
+          padding: 40px 20px;
+          color: var(--text-secondary);
+        }
+      
+        .empty-state-icon {
+          font-size: 64px;
+          margin-bottom: 16px;
+          opacity: 0.3;
+        }
+      
+        .empty-state-text {
+          font-size: 14px;
+        }
+      
+        /* Modal Styles */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 20px;
+          animation: fadeIn 0.3s ease;
+        }
+      
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      
+        .modal-content {
+          background: white;
+          border-radius: 16px;
+          max-width: 600px;
+          width: 100%;
+          max-height: 90vh;
+          overflow-y: auto;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          animation: slideUp 0.3s ease;
+        }
+      
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      
+        .modal-header {
+          background: linear-gradient(135deg, #075E54 0%, #128C7E 100%);
+          color: white;
+          padding: 24px;
+          border-radius: 16px 16px 0 0;
+          text-align: center;
+        }
+      
+        .modal-header h2 {
+          font-size: 24px;
+          margin-bottom: 8px;
+          font-weight: 600;
+        }
+      
+        .modal-header p {
+          font-size: 15px;
+          opacity: 0.95;
+        }
+      
+        .modal-body {
+          padding: 30px;
+        }
+      
+        .modal-section {
+          margin-bottom: 24px;
+        }
+      
+        .modal-section h3 {
+          font-size: 18px;
+          color: #075E54;
+          margin-bottom: 12px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+      
+        .modal-section p {
+          font-size: 15px;
+          color: #555;
+          line-height: 1.7;
+          margin-bottom: 12px;
+        }
+      
+        .experts-list {
+          background: #f8f9fa;
+          border-radius: 12px;
+          padding: 16px;
+          margin-top: 12px;
+        }
+      
+        .expert-item {
+          padding: 12px;
+          margin-bottom: 12px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+      
+        .expert-item:last-child {
+          margin-bottom: 0;
+        }
+      
+        .expert-item.pro {
+          background: #DCF8C6;
+          border-left: 4px solid #25D366;
+        }
+      
+        .expert-item.against {
+          background: #FFB9B9;
+          border-left: 4px solid #EF4444;
+        }
+      
+        .expert-icon {
+          font-size: 32px;
+        }
+      
+        .expert-info h4 {
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 4px;
+          color: #212121;
+        }
+      
+        .expert-info p {
+          font-size: 13px;
+          color: #667781;
+          margin: 0;
+        }
+      
+        .modal-footer {
+          padding: 24px 30px 30px;
+          display: flex;
+          justify-content: center;
+        }
+      
+        .start-btn {
+          background: linear-gradient(135deg, #25D366, #128C7E);
+          color: white;
+          border: none;
+          padding: 16px 48px;
+          border-radius: 24px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s;
+          box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+      
+        .start-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+        }
+      
+        .start-btn:active {
+          transform: translateY(0);
+        }
+      
+        .modal-hidden {
+          display: none;
+        }
+      
+        /* Notification Styles */
+        .notification {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          padding: 16px 24px;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 15px;
+          font-weight: 500;
+          z-index: 2000;
+          animation: slideInRight 0.3s ease-out, fadeOut 0.3s ease-out 2.7s forwards;
+          max-width: 400px;
+        }
+      
+        @keyframes slideInRight {
+          from {
+            transform: translateX(400px);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+      
+        .notification.success {
+          background: linear-gradient(135deg, #25D366, #128C7E);
+          color: white;
+        }
+      
+        .notification.error {
+          background: linear-gradient(135deg, #EF4444, #DC2626);
+          color: white;
+        }
+      
+                 .notification-icon {
+           font-size: 20px;
+         }
+       
+         /* Confirmation Modal Styles */
+         .confirm-modal-overlay {
+           position: fixed;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           background: rgba(0, 0, 0, 0.7);
+           display: none;
+           align-items: center;
+           justify-content: center;
+           z-index: 3000;
+           padding: 20px;
+           animation: fadeIn 0.3s ease;
+         }
+       
+         .confirm-modal-overlay.show {
+           display: flex;
+         }
+       
+         .confirm-modal-content {
+           background: white;
+           border-radius: 16px;
+           max-width: 400px;
+           width: 100%;
+           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+           animation: slideUp 0.3s ease;
+           overflow: hidden;
+         }
+       
+         .confirm-modal-header {
+           padding: 24px;
+           text-align: center;
+           border-bottom: 1px solid #eee;
+         }
+       
+         .confirm-modal-header .icon {
+           font-size: 48px;
+           margin-bottom: 12px;
+         }
+       
+         .confirm-modal-header h3 {
+           font-size: 20px;
+           color: #212121;
+           margin-bottom: 8px;
+         }
+       
+         .confirm-modal-header p {
+           font-size: 15px;
+           color: #667781;
+         }
+       
+         .confirm-modal-actions {
+           padding: 20px 24px 24px;
+           display: flex;
+           gap: 12px;
+         }
+       
+         .confirm-btn, .cancel-btn {
+           flex: 1;
+           padding: 12px 24px;
+           border: none;
+           border-radius: 24px;
+           font-size: 15px;
+           font-weight: 600;
+           cursor: pointer;
+           transition: all 0.2s;
+         }
+       
+         .confirm-btn {
+           background: linear-gradient(135deg, #EF4444, #DC2626);
+           color: white;
+         }
+       
+         .confirm-btn:hover {
+           transform: translateY(-1px);
+           box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+         }
+       
+         .confirm-btn:active {
+           transform: translateY(0);
+         }
+       
+         .cancel-btn {
+           background: #F0F0F0;
+           color: #667781;
+         }
+       
+         .cancel-btn:hover {
+           background: #E5E5E5;
+         }
+       
+                  @media (max-width: 768px) {
+           .modal-content {
+             max-width: 95%;
+           }
+      
+           .modal-header h2 {
+             font-size: 20px;
+           }
+      
+           .modal-body {
+             padding: 20px;
+           }
+      
+           .message {
+             max-width: 85%;
+           }
+      
+           .controls {
+             grid-template-columns: 1fr;
+           }
+      
+           .utility-btn {
+             grid-column: span 1;
+           }
+           
+           .notification {
+             right: 10px;
+             left: 10px;
+             max-width: none;
+           }
+         }
+      </style> 
+</head>
+<body>
+    <!-- Modal de Bienvenida -->
+    <div id="welcomeModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎤 Bienvenido al Debate de IA</h2>
+                <p>Un debate dinámico sobre edición genética</p>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3>📋 ¿En qué consiste?</h3>
+                    <p>Este es un debate interactivo sobre <strong>edición genética con CRISPR</strong>, donde dos expertos con visiones opuestas defenderán sus posturas sobre este controvertido tema.</p>
+                    <p>Puedes hacer clic en los botones para generar respuestas de cada experto y observar cómo desarrollan su argumentación durante el debate.</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>👥 ¿Quiénes participan?</h3>
+                    <div class="experts-list">
+                        <div class="expert-item pro">
+                            <div class="expert-icon">🧬</div>
+                            <div class="expert-info">
+                                <h4>George Church</h4>
+                                <p>Genetista visionario que DEFIENDE la edición genética CRISPR y sus beneficios para curar enfermedades, mejorar la seguridad alimentaria y conservar especies.</p>
+                            </div>
+                        </div>
+                        <div class="expert-item against">
+                            <div class="expert-icon">📚</div>
+                            <div class="expert-info">
+                                <h4>Francis Fukuyama</h4>
+                                <p>Filósofo crítico que CUESTIONA la edición genética por sus riesgos éticos, sociales y filosóficos, incluyendo inequidad y pérdida de diversidad humana.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h3>🚀 ¿Cómo empezar?</h3>
+                    <p>1. Haz clic en cualquiera de los botones para que un experto comience el debate</p>
+                    <p>2. Continúa alternando entre los dos expertos para ver su discusión</p>
+                    <p>3. Usa el botón "Limpiar debate" para reiniciar</p>
+                    <p>4. Exporta el debate a PDF para guardarlo</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="start-btn" onclick="closeWelcomeModal()">
+                    <span>🎯</span>
+                    Iniciar Debate
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div id="confirmModal" class="confirm-modal-overlay">
+        <div class="confirm-modal-content">
+            <div class="confirm-modal-header">
+                <div class="icon" id="confirmIcon">⚠️</div>
+                <h3 id="confirmTitle">Confirmar acción</h3>
+                <p id="confirmMessage">¿Estás seguro de realizar esta acción?</p>
+            </div>
+            <div class="confirm-modal-actions">
+                <button class="cancel-btn" id="cancelBtn">Cancelar</button>
+                <button class="confirm-btn" id="confirmYesBtn">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <div class="header-title">🎤 Debate sobre Edición Genética</div>
+                <div class="header-subtitle">
+                    <span class="status-indicator"></span>
+                    <span id="debateStatus">Debate listo</span>
+                </div>
+            </div>
+            <div style="display: flex; gap: 8px; font-size: 13px;">
+                <span style="background: #DCF8C6; color: #25D366; padding: 4px 10px; border-radius: 12px; font-weight: 600;">George Church</span>
+                <span style="opacity: 0.7;">vs</span>
+                <span style="background: #FFB9B9; color: #EF4444; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Francis Fukuyama</span>
+            </div>
+        </header>
+        
+        <div class="chat-container" id="dialogueContainer">
+            <div class="message moderator-message">
+                <div class="message-bubble">
+                    <div class="message-content">
+                        👋 ¡Bienvenido! Haz clic en los botones para generar respuestas de los expertos.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="controls-row">
+                <button id="proBtn" class="pro-btn">
+                    <span id="proBtnText">🧬 George Church</span>
+                </button>
+                <button id="againstBtn" class="against-btn">
+                    <span id="againstBtnText">📚 Francis Fukuyama</span>
+                </button>
+            </div>
+            <div class="controls-row">
+                <button id="clearBtn" class="utility-btn">
+                    🗑️ Limpiar debate
+                </button>
+                <button id="exportBtn" class="utility-btn">
+                    📄 Exportar a PDF
+                </button>
+            </div>
+            <button id="endDebateBtn" class="utility-btn" style="background: #ef4444;">
+                🏁 Terminar debate
+            </button>
+        </div>
+    </div>
+
+    <script>
+                 // Función para mostrar notificaciones
+         function showNotification(message, type = 'success') {
+             const notification = document.createElement('div');
+             notification.className = `notification ${type}`;
+             
+             const icon = document.createElement('span');
+             icon.className = 'notification-icon';
+             icon.textContent = type === 'success' ? '✅' : '❌';
+             
+             const text = document.createElement('span');
+             text.textContent = message;
+             
+             notification.appendChild(icon);
+             notification.appendChild(text);
+             document.body.appendChild(notification);
+             
+             // Remover la notificación después de 3 segundos
+             setTimeout(() => {
+                 notification.style.animation = 'fadeOut 0.3s ease-out forwards';
+                 setTimeout(() => {
+                     notification.remove();
+                 }, 300);
+             }, 2700);
+         }
+
+         // Función para mostrar modal de confirmación
+         function showConfirmModal(title, message, icon = '⚠️', onConfirm) {
+             const modal = document.getElementById('confirmModal');
+             const confirmTitle = document.getElementById('confirmTitle');
+             const confirmMessage = document.getElementById('confirmMessage');
+             const confirmIcon = document.getElementById('confirmIcon');
+             const confirmBtn = document.getElementById('confirmYesBtn');
+             const cancelBtn = document.getElementById('cancelBtn');
+
+             confirmTitle.textContent = title;
+             confirmMessage.textContent = message;
+             confirmIcon.textContent = icon;
+
+             // Cerrar modal con la tecla ESC
+             const handleEscape = (e) => {
+                 if (e.key === 'Escape') {
+                     closeConfirmModal();
+                     document.removeEventListener('keydown', handleEscape);
+                 }
+             };
+             document.addEventListener('keydown', handleEscape);
+
+             // Mostrar modal
+             modal.classList.add('show');
+
+             // Limpiar listeners previos
+             const newConfirmBtn = confirmBtn.cloneNode(true);
+             confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+             const newCancelBtn = cancelBtn.cloneNode(true);
+             cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+             // Agregar nuevos listeners
+             document.getElementById('confirmYesBtn').addEventListener('click', () => {
+                 closeConfirmModal();
+                 document.removeEventListener('keydown', handleEscape);
+                 onConfirm();
+             });
+
+             document.getElementById('cancelBtn').addEventListener('click', () => {
+                 closeConfirmModal();
+                 document.removeEventListener('keydown', handleEscape);
+             });
+
+             // Cerrar al hacer clic fuera del modal
+             modal.addEventListener('click', function(e) {
+                 if (e.target === modal) {
+                     closeConfirmModal();
+                     document.removeEventListener('keydown', handleEscape);
+                 }
+             });
+         }
+
+         function closeConfirmModal() {
+             const modal = document.getElementById('confirmModal');
+             modal.classList.remove('show');
+         }
+
+        // Función para cerrar el modal de bienvenida
+        function closeWelcomeModal() {
+            const modal = document.getElementById('welcomeModal');
+            modal.style.animation = 'fadeOut 0.3s ease';
+            setTimeout(() => {
+                modal.classList.add('modal-hidden');
+            }, 300);
+        }
+
+        // Agregar animación de salida
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const proBtn = document.getElementById('proBtn');
+            const againstBtn = document.getElementById('againstBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const endDebateBtn = document.getElementById('endDebateBtn');
+            const dialogueContainer = document.getElementById('dialogueContainer');
+            const debateStatus = document.getElementById('debateStatus');
+            const proBtnText = document.getElementById('proBtnText');
+            const againstBtnText = document.getElementById('againstBtnText');
+            
+            async function loadDebateHistory() {
+                try {
+                    const response = await fetch('/api/debate/history');
+                    if (!response.ok) throw new Error('Error al cargar historial');
+                    
+                    const result = await response.json();
+                    renderMessages(result.data);
+                    
+                    debateStatus.textContent = 'Debate activo';
+                } catch (error) {
+                    console.error('Error al cargar historial:', error);
+                }
+            }
+            
+            function renderMessages(messages) {
+                if (!messages || messages.length === 0) {
+                    dialogueContainer.innerHTML = `
+                        <div class="message moderator-message">
+                            <div class="message-bubble">
+                                <div class="message-content">
+                                    👋 ¡Haz clic en los botones para comenzar el debate!
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                dialogueContainer.innerHTML = '';
+                messages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${msg.role}-message`;
+                    
+                    const messageBubble = document.createElement('div');
+                    messageBubble.className = 'message-bubble';
+                    
+                    const messageHeader = document.createElement('div');
+                    messageHeader.className = 'message-header';
+                    
+                    const messageAuthor = document.createElement('span');
+                    messageAuthor.className = 'message-author';
+                    messageAuthor.textContent = msg.speaker;
+                    
+                    const messageTime = document.createElement('span');
+                    messageTime.className = 'message-time';
+                    messageTime.textContent = new Date(msg.createdAt).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                    
+                    messageHeader.appendChild(messageAuthor);
+                    messageHeader.appendChild(messageTime);
+                    
+                    const messageContent = document.createElement('div');
+                    messageContent.className = 'message-content';
+                    messageContent.textContent = msg.message;
+                    
+                    messageBubble.appendChild(messageHeader);
+                    messageBubble.appendChild(messageContent);
+                    messageDiv.appendChild(messageBubble);
+                    
+                    dialogueContainer.appendChild(messageDiv);
+                });
+                
+                dialogueContainer.scrollTop = dialogueContainer.scrollHeight;
+            }
+            
+            proBtn.addEventListener('click', async () => {
+                try {
+                    proBtnText.innerHTML = '<span class="loading"></span>';
+                    proBtn.disabled = true;
+                    
+                    const response = await fetch('/api/debate/response/pro', {
+                        method: 'POST'
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Error en la respuesta');
+                    }
+                    
+                    await loadDebateHistory();
+                } catch (error) {
+                    console.error('Error:', error);
+                } finally {
+                    proBtnText.textContent = '🧬 George Church';
+                    proBtn.disabled = false;
+                }
+            });
+            
+            againstBtn.addEventListener('click', async () => {
+                try {
+                    againstBtnText.innerHTML = '<span class="loading"></span>';
+                    againstBtn.disabled = true;
+                    
+                    const response = await fetch('/api/debate/response/against', {
+                        method: 'POST'
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Error en la respuesta');
+                    }
+                    
+                    await loadDebateHistory();
+                } catch (error) {
+                    console.error('Error:', error);
+                } finally {
+                    againstBtnText.textContent = '📚 Francis Fukuyama';
+                    againstBtn.disabled = false;
+                }
+            });
+            
+            clearBtn.addEventListener('click', async () => {
+                showConfirmModal(
+                    'Limpiar debate',
+                    '¿Estás seguro de querer limpiar todo el debate? Esta acción no se puede deshacer.',
+                    '🗑️',
+                    async () => {
+                        try {
+                            clearBtn.innerHTML = '<span class="loading"></span>';
+                            clearBtn.disabled = true;
+                            
+                            const response = await fetch('/api/debate/clear', {
+                                method: 'DELETE'
+                            });
+                            
+                            if (!response.ok) {
+                                throw new Error('Error al limpiar debate');
+                            }
+                            
+                            showNotification('Debate limpiado correctamente', 'success');
+                            await loadDebateHistory();
+                        } catch (error) {
+                            console.error('Error:', error);
+                            showNotification('Error al limpiar el debate', 'error');
+                        } finally {
+                            clearBtn.textContent = '🗑️ Limpiar debate';
+                            clearBtn.disabled = false;
+                        }
+                    }
+                );
+            });
+            
+            exportBtn.addEventListener('click', async () => {
+                try {
+                    exportBtn.innerHTML = '<span class="loading"></span>';
+                    exportBtn.disabled = true;
+                    
+                    window.open('/api/debate/export/pdf', '_blank');
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                } finally {
+                    setTimeout(() => {
+                        exportBtn.textContent = '📄 Exportar a PDF';
+                        exportBtn.disabled = false;
+                    }, 3000);
+                }
+            });
+            
+            endDebateBtn.addEventListener('click', async () => {
+                showConfirmModal(
+                    'Terminar debate',
+                    '¿Estás seguro de querer terminar el debate? Se limpiará todo el historial y volverás a la pantalla inicial.',
+                    '🏁',
+                    async () => {
+                        try {
+                            endDebateBtn.innerHTML = '<span class="loading"></span>';
+                            endDebateBtn.disabled = true;
+                            
+                            // Limpiar el debate
+                            const response = await fetch('/api/debate/clear', {
+                                method: 'DELETE'
+                            });
+                            
+                            if (!response.ok) {
+                                throw new Error('Error al terminar debate');
+                            }
+                            
+                            // Mostrar notificación de éxito
+                            showNotification('Debate terminado con éxito', 'success');
+                            
+                            // Esperar un momento y recargar la página para empezar de nuevo
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
+                            
+                        } catch (error) {
+                            console.error('Error:', error);
+                            showNotification('Error al terminar el debate', 'error');
+                        } finally {
+                            endDebateBtn.textContent = '🏁 Terminar debate';
+                            endDebateBtn.disabled = false;
+                        }
+                    }
+                );
+            });
+            
+            loadDebateHistory();
+        });
+    </script>
+</body>
+</html>
